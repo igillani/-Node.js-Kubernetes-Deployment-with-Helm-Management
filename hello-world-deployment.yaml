@@ -1,21 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-world
+  name: my-app
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: hello-world
+      app: my-app
   template:
     metadata:
       labels:
-        app: hello-world
+        app: my-app
     spec:
       containers:
-      - name: hello-world
-        image: hashicorp/http-echo
-        args:
-        - "-text=this is the edited version although i am still learning lets hope ill make good progess!"
-        ports:
-        - containerPort: 5678
+        - name: my-app-container
+          image: nginx  # Replace with your application image
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html  # Adjust this path as needed
+              name: my-storage
+      volumes:
+        - name: my-storage
+          persistentVolumeClaim:
+            claimName: my-pvc  # Replace with your PVC name
