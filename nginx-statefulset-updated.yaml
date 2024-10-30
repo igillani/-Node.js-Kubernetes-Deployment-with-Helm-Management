@@ -31,3 +31,22 @@ spec:
             port: 80
           initialDelaySeconds: 5
           periodSeconds: 10
+        volumeMounts:
+          - name: nginx-config-volume
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf  # Mount nginx.conf from ConfigMap
+        env:
+          - name: USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: nginx-secret
+                key: username
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: nginx-secret
+                key: password
+      volumes:
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config  # Reference to the ConfigMap
