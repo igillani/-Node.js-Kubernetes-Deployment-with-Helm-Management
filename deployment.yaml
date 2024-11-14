@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: p2-nodejs-app
+  labels:
+    app: p2-nodejs-app
+spec:
+  replicas: 3  # Adding replicas for high availability
+  selector:
+    matchLabels:
+      app: p2-nodejs-app
+  template:
+    metadata:
+      labels:
+        app: p2-nodejs-app
+    spec:
+      containers:
+      - name: p2-nodejs-container
+        image: p2-nodejs-app:latest
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+        livenessProbe:  # Adding liveness probe
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:  # Adding readiness probe
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 3
+          periodSeconds: 5
